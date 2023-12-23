@@ -62,6 +62,10 @@ def main():
     
     parser.add_argument("--start", type=int, help="Start timestamp")
     parser.add_argument("--end", type=int, help="End timestamp")
+
+    parser.add_argument("--minmag", type=float, help="Minimum magnitude")
+    parser.add_argument("--maxmag", type=float, help="Maximum magnitude")
+
     args = parser.parse_args()
     
     if args.refresh:
@@ -81,6 +85,11 @@ def main():
         events = [event for event in events if event["properties"]["time"] >= args.start]
     if args.end:
         events = [event for event in events if event["properties"]["time"] <= args.end]
+
+    if args.minmag:
+        events = [event for event in events if event["properties"]["mag"] >= args.minmag]
+    if args.maxmag:
+        events = [event for event in events if event["properties"]["mag"] <= args.maxmag]
     
     if not events:
         print("No events found matching the query")
