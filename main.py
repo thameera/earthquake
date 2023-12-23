@@ -75,11 +75,19 @@ def main():
     
     # Query 
     data = get_cached_data()
+    events = data["features"]
     
     if args.start:
-        pass
+        events = [event for event in events if event["properties"]["time"] >= args.start]
     if args.end:
-        pass
+        events = [event for event in events if event["properties"]["time"] <= args.end]
+    
+    if not events:
+        print("No events found matching the query")
+        return
+
+    for event in events:
+        print(event["properties"]["title"])
     
     
 if __name__ == "__main__":
