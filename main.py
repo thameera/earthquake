@@ -3,6 +3,7 @@ import sys
 import os
 import json
 import argparse
+import re
 
 URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson"
 CACHE_FILE = "cache.json"
@@ -66,6 +67,8 @@ def main():
     parser.add_argument("--minmag", type=float, help="Minimum magnitude")
     parser.add_argument("--maxmag", type=float, help="Maximum magnitude")
 
+    parser.add_argument("--location", help="Location of the earthquake")
+
     args = parser.parse_args()
     
     if args.refresh:
@@ -90,6 +93,12 @@ def main():
         events = [event for event in events if event["properties"]["mag"] >= args.minmag]
     if args.maxmag:
         events = [event for event in events if event["properties"]["mag"] <= args.maxmag]
+
+    if args.location:
+        pattern = re.compile(args.location, re.IGNORECASE)
+        events = [event for event in events if pattern.search(event["properties"]["place"].lower())]
+
+        #events = [event for event in events if args.location.lower() in event["properties"]["place"].lower()]
     
     if not events:
         print("No events found matching the query")
