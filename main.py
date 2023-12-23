@@ -7,6 +7,14 @@ import argparse
 URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson"
 CACHE_FILE = "cache.json"
 
+def read_from_cache():
+    if not os.path.exists(CACHE_FILE):
+        return None
+
+    with open(CACHE_FILE) as f:
+        data = f.read()
+        return json.loads(data)
+
 def write_to_cache(data):
     with open(CACHE_FILE, "w") as f:
         f.write(json.dumps(data))
@@ -23,33 +31,30 @@ def get_refreshed_data():
 
 # Get from cache, or failing that, refresh data
 def get_cached_data():
-    if os.path.exists(CACHE_FILE):
-        with open(CACHE_FILE) as f:
-            data = "\n".join(f.readlines())
-            return json.loads(data)
+    data = read_from_cache()
+
+    if not data:
+        data = get_refreshed_data()
+        write_to_cache(data)
     
-    data = get_refreshed_data()
-    write_to_cache(data)
-        
     return data
 
 # Returns whether cache changed
 def update_existing_cache():
     updated_data = get_refreshed_data()
-    updated_data_str = json.dumps(updated_data)
-    
-    if not os.path.exists(CACHE_FILE):
+
+    cached_data = read_from_cache()
+
+    if not cached_data:
         write_to_cache(updated_data)
         return True
     
-    with open(CACHE_FILE) as f:
-        cached_data = "\n".join(f.readlines())
-        is_changed = cached_data != updated_data_str
+    is_changed = json.dumps(cached_data) != json.dumps(updated_data)
 
-        if is_changed:
-            write_to_cache(updated_data)
+    if is_changed:
+        write_to_cache(updated_data)
 
-        return is_changed
+    return is_changed
 
 def main():
     parser = argparse.ArgumentParser(description="Earthquake analyzer")
