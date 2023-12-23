@@ -7,6 +7,10 @@ import argparse
 URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson"
 CACHE_FILE = "cache.json"
 
+def write_to_cache(data):
+    with open(CACHE_FILE, "w") as f:
+        f.write(json.dumps(data))
+
 def get_refreshed_data():
     try:
         res = requests.get(URL)
@@ -19,14 +23,13 @@ def get_refreshed_data():
 
 # Get from cache, or failing that, refresh data
 def get_cached_data():
-    if not os.path.exists(CACHE_FILE):
+    if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE) as f:
             data = "\n".join(f.readlines())
             return json.loads(data)
     
     data = get_refreshed_data()
-    with open(CACHE_FILE, "w") as f:
-        f.write(json.dumps(data))
+    write_to_cache(data)
         
     return data
 
@@ -36,39 +39,41 @@ def update_existing_cache():
     updated_data_str = json.dumps(updated_data)
     
     if not os.path.exists(CACHE_FILE):
-        with open(CACHE_FILE) as f:
-            data = "\n".join(f.readlines())
-            return True
+        write_to_cache(updated_data)
+        return True
     
-    f = open(CACHE_FILE)
-    cached_data = "\n".join(f.readlines())
-    f.close()
-    
-    with open(CACHE_FILE, "w") as writer:
-        writer.write(updated_data_str)
-    
-    return cached_data != updated_data_str
+    with open(CACHE_FILE) as f:
+        cached_data = "\n".join(f.readlines())
+        is_changed = cached_data != updated_data_str
+
+        if is_changed:
+            write_to_cache(updated_data)
+
+        return is_changed
 
 def main():
     parser = argparse.ArgumentParser(description="Earthquake analyzer")
     parser.add_argument("--refresh", action="store_true", help="Refresh the cache")
     
-    parser.add_argument("--from", type="int", help="Start timestamp")
-    parser.add_argument("--to", type="int", help="End timestamp")
+    parser.add_argument("--start", type=int, help="Start timestamp")
+    parser.add_argument("--end", type=int, help="End timestamp")
     args = parser.parse_args()
     
     if args.refresh:
         is_changed = update_existing_cache()
-        print("Data was changed")
+        if is_changed:
+            print("Data was changed")
+        else:
+            print("Data was not changed")
        
     # TODO: exit early if no query params were specified 
     
     # Query 
     data = get_cached_data()
     
-    if args.from:
+    if args.start:
         pass
-    if args.to:
+    if args.end:
         pass
     
     
