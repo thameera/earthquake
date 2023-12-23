@@ -49,7 +49,7 @@ def update_existing_cache():
         write_to_cache(updated_data)
         return True
     
-    is_changed = json.dumps(cached_data) != json.dumps(updated_data)
+    is_changed = json.dumps(cached_data["features"]) != json.dumps(updated_data["features"])
 
     if is_changed:
         write_to_cache(updated_data)
