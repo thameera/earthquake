@@ -5,7 +5,7 @@ import json
 import argparse
 import re
 
-URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson"
+URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson"
 CACHE_FILE = "cache.json"
 
 def read_from_cache():
