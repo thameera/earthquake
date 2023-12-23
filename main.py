@@ -84,7 +84,7 @@ def save_detail(event_id):
 
 def main():
     parser = argparse.ArgumentParser(description="Earthquake analyzer")
-    parser.add_argument("--refresh", action="store_true", help="Refresh the cache")
+    parser.add_argument("--refresh", "-R", action="store_true", help="Refresh the cache")
     
     parser.add_argument("--start", type=int, help="Start timestamp")
     parser.add_argument("--end", type=int, help="End timestamp")
@@ -92,7 +92,7 @@ def main():
     parser.add_argument("--minmag", type=float, help="Minimum magnitude")
     parser.add_argument("--maxmag", type=float, help="Maximum magnitude")
 
-    parser.add_argument("--location", help="Location of the earthquake")
+    parser.add_argument("--location", "-L", help="Location of the earthquake")
 
     parser.add_argument("--save", dest="item_id", help="Item ID to save detail")
 
