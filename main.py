@@ -57,6 +57,31 @@ def update_existing_cache():
 
     return is_changed
 
+def save_detail(event_id):
+    data = get_cached_data()
+    events = data["features"]
+
+    event = [event for event in events if event["id"] == event_id]
+    if not event:
+        sys.stderr.write("No event found matching the ID")
+        sys.exit(1)
+
+    try:
+        res = requests.get(event[0]["properties"]["detail"])
+        res.raise_for_status()
+
+        detail = res.json()
+        filename = f"{event_id}.json"
+
+        with open(filename, "w") as f:
+            f.write(json.dumps(detail))
+
+        print(f"Saved detail to {filename}")
+    except Exception as err:
+        sys.stderr.write(err)
+        sys.stderr.write("There was an error fetching data")
+        sys.exit(1)
+
 def main():
     parser = argparse.ArgumentParser(description="Earthquake analyzer")
     parser.add_argument("--refresh", action="store_true", help="Refresh the cache")
@@ -69,6 +94,8 @@ def main():
 
     parser.add_argument("--location", help="Location of the earthquake")
 
+    parser.add_argument("--save", dest="item_id", help="Item ID to save detail")
+
     args = parser.parse_args()
     
     if args.refresh:
@@ -77,9 +104,12 @@ def main():
             print("Data was changed")
         else:
             print("Data was not changed")
+        return
+
+    if args.item_id:
+        save_detail(args.item_id)
+        return
        
-    # TODO: exit early if no query params were specified 
-    
     # Query 
     data = get_cached_data()
     events = data["features"]
