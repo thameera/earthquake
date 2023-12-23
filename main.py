@@ -97,15 +97,14 @@ def main():
     if args.location:
         pattern = re.compile(args.location, re.IGNORECASE)
         events = [event for event in events if pattern.search(event["properties"]["place"].lower())]
-
-        #events = [event for event in events if args.location.lower() in event["properties"]["place"].lower()]
     
     if not events:
         print("No events found matching the query")
         return
 
+    print("ID\t\tTime\t\tMag\tLocation")
     for event in events:
-        print(event["properties"]["title"])
+        print(f'{event["id"]}\t{event["properties"]["time"]}\t{event["properties"]["mag"]}\t{event["properties"]["place"]}')
     
     
 if __name__ == "__main__":
