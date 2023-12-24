@@ -1,9 +1,10 @@
-import requests
-import sys
-import os
-import json
 import argparse
+import json
+import os
 import re
+import sys
+
+import requests
 
 URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson"
 CACHE_FILE = "cache.json"
