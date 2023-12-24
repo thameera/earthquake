@@ -64,13 +64,10 @@ def get_cached_data():
     
     return data
 
-def update_existing_cache():
+def update_cache():
     """
-    Force-updates the cache and returns whether the data was changed.
+    Force-updates the cache and prints whether the data was changed.
     Note: It only checks the features array when determining changes, to avoid counting metadata.generated timestamp.
-
-    Returns:
-        bool: Whether the data was changed or not
     """
     updated_data = get_refreshed_data()
 
@@ -84,8 +81,9 @@ def update_existing_cache():
 
     if is_changed:
         write_to_cache(updated_data)
-
-    return is_changed
+        print("Data was changed")
+    else:
+        print("Data was not changed")
 
 def save_detail(event_id):
     """
@@ -177,11 +175,7 @@ def main():
     args = parse_args()
     
     if args.refresh:
-        is_changed = update_existing_cache()
-        if is_changed:
-            print("Data was changed")
-        else:
-            print("Data was not changed")
+        update_cache()
 
     elif args.item_id:
         save_detail(args.item_id)
