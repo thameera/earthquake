@@ -23,6 +23,7 @@ def read_from_cache():
         data = f.read()
         return json.loads(data)
 
+
 def write_to_cache(data):
     """
     Writes data to the cache
@@ -32,6 +33,7 @@ def write_to_cache(data):
     """
     with open(CACHE_FILE, "w") as f:
         f.write(json.dumps(data))
+
 
 def get_refreshed_data():
     """
@@ -49,6 +51,7 @@ def get_refreshed_data():
         sys.stderr.write("There was an error fetching data")
         sys.exit(1)
 
+
 def get_cached_data():
     """
     Get data from cache, or refresh cache if it doesn't exist
@@ -63,6 +66,7 @@ def get_cached_data():
         write_to_cache(data)
     
     return data
+
 
 def update_cache():
     """
@@ -84,6 +88,7 @@ def update_cache():
         print("Data was changed")
     else:
         print("Data was not changed")
+
 
 def save_detail(event_id):
     """
@@ -115,6 +120,7 @@ def save_detail(event_id):
         sys.stderr.write(err)
         sys.stderr.write("There was an error fetching data")
         sys.exit(1)
+
 
 def query(args):
     """
@@ -148,6 +154,7 @@ def query(args):
     for event in events:
         print(f'{event["id"]}\t{event["properties"]["time"]}\t{event["properties"]["mag"]}\t{event["properties"]["place"]}')
 
+
 def parse_args():
     """
     Parses the command line arguments
@@ -171,6 +178,7 @@ def parse_args():
 
     return parser.parse_args()
 
+
 def main():
     args = parse_args()
     
@@ -183,5 +191,6 @@ def main():
     else:
         query(args)
     
+
 if __name__ == "__main__":
     main()
