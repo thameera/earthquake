@@ -54,3 +54,8 @@ ID          Time            Mag Location
 us7000lk4c  1702512575963   4.1 24 km NNW of Leinster, Australia
 us7000ljw6  1702396582344   4.2 107 km NNE of Fitzroy Crossing, Australia
 ```
+
+## Assumptions
+
+* The response JSON format does not change.
+* The IDs of the features are unique.

@@ -82,35 +82,7 @@ def save_detail(event_id):
         sys.stderr.write("There was an error fetching data")
         sys.exit(1)
 
-def main():
-    parser = argparse.ArgumentParser(description="Earthquake analyzer")
-    parser.add_argument("--refresh", "-R", action="store_true", help="Refresh the cache")
-    
-    parser.add_argument("--start", type=int, help="Start timestamp")
-    parser.add_argument("--end", type=int, help="End timestamp")
-
-    parser.add_argument("--minmag", type=float, help="Minimum magnitude")
-    parser.add_argument("--maxmag", type=float, help="Maximum magnitude")
-
-    parser.add_argument("--location", "-L", help="Location of the earthquake")
-
-    parser.add_argument("--save", dest="item_id", help="Item ID to save detail")
-
-    args = parser.parse_args()
-    
-    if args.refresh:
-        is_changed = update_existing_cache()
-        if is_changed:
-            print("Data was changed")
-        else:
-            print("Data was not changed")
-        return
-
-    if args.item_id:
-        save_detail(args.item_id)
-        return
-       
-    # Query 
+def query(args):
     data = get_cached_data()
     events = data["features"]
     
@@ -135,7 +107,36 @@ def main():
     print("ID\t\tTime\t\tMag\tLocation")
     for event in events:
         print(f'{event["id"]}\t{event["properties"]["time"]}\t{event["properties"]["mag"]}\t{event["properties"]["place"]}')
+
+def main():
+    parser = argparse.ArgumentParser(description="Earthquake analyzer")
+
+    parser.add_argument("--refresh", "-R", action="store_true", help="Refresh the cache")
+
+    parser.add_argument("--start", type=int, help="Start timestamp")
+    parser.add_argument("--end", type=int, help="End timestamp")
+
+    parser.add_argument("--minmag", type=float, help="Minimum magnitude")
+    parser.add_argument("--maxmag", type=float, help="Maximum magnitude")
+
+    parser.add_argument("--location", "-L", help="Location of the earthquake")
+
+    parser.add_argument("--save", dest="item_id", help="Item ID to save detail")
+
+    args = parser.parse_args()
     
+    if args.refresh:
+        is_changed = update_existing_cache()
+        if is_changed:
+            print("Data was changed")
+        else:
+            print("Data was not changed")
+
+    elif args.item_id:
+        save_detail(args.item_id)
+
+    else:
+        query(args)
     
 if __name__ == "__main__":
     main()
