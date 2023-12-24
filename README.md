@@ -18,8 +18,8 @@ python main.py [-h] [--refresh] [--start START] [--end END] [--minmag MINMAG] [-
 options:
   -h, --help            show this help message and exit
   --refresh, -R         Refresh the cache
-  --start START         Start timestamp
-  --end END             End timestamp
+  --start START         Start time (unix timestamp)
+  --end END             End time (unix timestamp)
   --minmag MINMAG       Minimum magnitude
   --maxmag MAXMAG       Maximum magnitude
   --location LOCATION, -L LOCATION Location of the earthquake

@@ -166,8 +166,8 @@ def parse_args():
 
     parser.add_argument("--refresh", "-R", action="store_true", help="Refresh the cache")
 
-    parser.add_argument("--start", type=int, help="Start timestamp")
-    parser.add_argument("--end", type=int, help="End timestamp")
+    parser.add_argument("--start", type=int, help="Start time (unix timestamp)")
+    parser.add_argument("--end", type=int, help="End time (unix timestamp)")
 
     parser.add_argument("--minmag", type=float, help="Minimum magnitude")
     parser.add_argument("--maxmag", type=float, help="Maximum magnitude")
