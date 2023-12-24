@@ -1,6 +1,8 @@
-# Eathquaake Data Query Tool
+# Eathquake Data Query Tool
 
 Lets you query data from USGS earthquake data.
+
+Data source: [Raw data](https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson) - [JSON schema](https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php)
 
 ## Installation
 
@@ -27,23 +29,23 @@ options:
 ## Examples:
 
 ```
-$ python main.py
-# Lists all earthquakes in the past 30 days. Uses cached data, but fetches new data if cache is not present.
+# List all earthquakes in the past 30 days. Uses cached data, but fetches new data if cache is not present.
+python main.py
 
-$ python main.py --refresh
-# Updates the cache. Also prints whether the data was changed or not.
+# Update the cache. Also prints whether the data was changed or not.
+python main.py --refresh
 
-$ python main.py --start 1703311054980
-# Shows only earthquakes after the 1703311054981 (unix timestamp)
+# Show only earthquakes after the 1703311054981 (unix timestamp)
+python main.py --start 1703311054980
 
-$ python main.py --start 1703311054980 --end 1703313461360 --minmag 1 --maxmag 2
-# Filters earthquakes that happened between the start and end timestamps, and between 1 and 2 in magnitude
+# Filter earthquakes that happened between the start and end timestamps, and between 1 and 2 in magnitude
+python main.py --start 1703311054980 --end 1703313461360 --minmag 1 --maxmag 2
 
+# Filter by location. This will be a case-insensitive search.
 $ python main.py --location aust
-# Filters by location. This will be a case-insensitive search.
 
-$ python main.py --save us7000ljw6
-# Saves the details of earthquake with the given ID to a JSON file. The IDs are found in the tool's query output.
+# Save the details of earthquake with the given ID to a JSON file. The IDs are found in the tool's query output.
+python main.py --save us7000ljw6
 ```
 
 ## Example output
