@@ -10,6 +10,12 @@ URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojs
 CACHE_FILE = "cache.json"
 
 def read_from_cache():
+    """
+    Reads data from the cache
+
+    Returns:
+        dict: The data from the cache, or None if the cache does not exist
+    """
     if not os.path.exists(CACHE_FILE):
         return None
 
@@ -18,10 +24,22 @@ def read_from_cache():
         return json.loads(data)
 
 def write_to_cache(data):
+    """
+    Writes data to the cache
+
+    Args:
+        data: JSON dict to write
+    """
     with open(CACHE_FILE, "w") as f:
         f.write(json.dumps(data))
 
 def get_refreshed_data():
+    """
+    Fetches the latest data from the USGS API
+
+    Returns:
+        dict: JSON dict (complete JSON response from API)
+    """
     try:
         res = requests.get(URL)
         res.raise_for_status()
@@ -31,8 +49,13 @@ def get_refreshed_data():
         sys.stderr.write("There was an error fetching data")
         sys.exit(1)
 
-# Get from cache, or failing that, refresh data
 def get_cached_data():
+    """
+    Get data from cache, or refresh cache if it doesn't exist
+
+    Returns:
+        dict: JSON data
+    """
     data = read_from_cache()
 
     if not data:
@@ -41,8 +64,14 @@ def get_cached_data():
     
     return data
 
-# Returns whether cache changed
 def update_existing_cache():
+    """
+    Force-updates the cache and returns whether the data was changed.
+    Note: It only checks the features array when determining changes, to avoid counting metadata.generated timestamp.
+
+    Returns:
+        bool: Whether the data was changed or not
+    """
     updated_data = get_refreshed_data()
 
     cached_data = read_from_cache()
@@ -59,6 +88,12 @@ def update_existing_cache():
     return is_changed
 
 def save_detail(event_id):
+    """
+    Saves the detail JSON of a given ID to a JSON file
+
+    Args:
+        event_id: Event ID
+    """
     data = get_cached_data()
     events = data["features"]
 
@@ -84,6 +119,12 @@ def save_detail(event_id):
         sys.exit(1)
 
 def query(args):
+    """
+    Queries the earthquake data from cache
+
+    Args:
+        args: Parsed arguments from argparse
+    """
     data = get_cached_data()
     events = data["features"]
     
@@ -109,7 +150,13 @@ def query(args):
     for event in events:
         print(f'{event["id"]}\t{event["properties"]["time"]}\t{event["properties"]["mag"]}\t{event["properties"]["place"]}')
 
-def main():
+def parse_args():
+    """
+    Parses the command line arguments
+
+    Returns:
+        args: Dict of parsed args
+    """
     parser = argparse.ArgumentParser(description="Earthquake analyzer")
 
     parser.add_argument("--refresh", "-R", action="store_true", help="Refresh the cache")
@@ -124,7 +171,10 @@ def main():
 
     parser.add_argument("--save", dest="item_id", help="Item ID to save detail")
 
-    args = parser.parse_args()
+    return parser.parse_args()
+
+def main():
+    args = parse_args()
     
     if args.refresh:
         is_changed = update_existing_cache()
